@@ -1,0 +1,78 @@
+{% extends "__base.html" %}
+
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col-8">
+                <h3 class="mb-0">Crear nueva reserva:</h3>
+            </div>
+            <div class="col-4 text-right">
+                <a href="{% url 'home' %}" class="btn btn-sm btn-primary">Volver</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                            </label>
+                            <div class="input-daterange datepicker row align-items-center">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                            </div>
+                                            <label for="checkin" class="field-label">
+                                                Fecha de Entrada
+                                                <input id="entrada" name="entrada" class="form-control" placeholder="Start date" type="text" value="01/17/2021">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                            </div>
+                                            <label for="checkin" class="field-label">
+                                                Fecha de Salida
+                                                <input id="salida" name="salida" class="form-control" placeholder="End date" type="text" value="01/20/2021">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="section colm colm12">
+                            <label for="adults" class="field prepend-icon">
+                                <span class="field-icon"><i class="fa fa-users"></i></span>  
+                                <label for="children" class="field-label">Seleccione cantidad de huespedes</label>
+                                <select id="huespedes" name="huespedes" class="form-control" data-toggle="select" title="huespedes">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                </select>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4 offset-4">
+                        <button type="submit" class="btn btn-success btn-block">Comprobar Disponibilidad</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "__base.html" %}
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col-8">
+                <h3 class="mb-0">Delete Booking #{{object.id}}</h3>
+            </div>
+            <div class="col-4 text-right">
+                <a href="{% url 'bookings-detail' object.id %}" class="btn btn-sm btn-info">Ver detalles</a>
+                <a href="{% url 'home' %}" class="btn btn-sm btn-primary">Volver a la lista</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="alert alert-warning" role="alert">
+                ¿Estas seguro que quieres borrar <strong>{{ object }}</strong> ?
+            </div>
+            <div class="row">
+                <div class="col-4 offset-4">
+                    <button type="submit" class="btn btn-block btn-danger">Borrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

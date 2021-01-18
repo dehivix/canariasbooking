@@ -1,0 +1,111 @@
+{% extends "__base.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card bg-secondary shadow h-100">
+            <div class="card-header bg-white border-0">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <h3 class="mb-0">Lista de habitaciones disponibles</h3>
+                        <h5 class="mb-0"> Hay {{ hab_disponibles.count }} disponibles para la fecha seleccionada</h5>
+                    </div>
+                    <div class="col-4 text-right">
+                        <a href="{% url 'home' %}" class="btn btn-sm btn-primary">Volver al inicio</a>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Habitación</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Precio noche</th>
+                        <th scope="col">Total de la reserva</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hab in hab_disponibles %}
+                    <tr>
+                        <td>{{hab.nombre}}</td>
+                        <td>{{hab.tipo_habitacion.alias}}</td>
+                        <td>{{hab.descripcion_corta}}</td>
+                        <td>{{hab.tipo_habitacion.precio}}</td>
+                        <td>{% widthratio hab.tipo_habitacion.precio.amount 1 dias_reserva %}€</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target=".hab-modal-{{hab.id}}-xl">Seleccionar</button>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade hab-modal-{{hab.id}}-xl" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Datos del Reservante</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                       {{ hab.nombre }}
+                       Por favor, introduzca a continuacion los datos de la persona responsable de la reserva:
+
+                        <form id="form-{{ hab.id }}" action="{% url 'bookings-confirm' %}" method="post">{% csrf_token %}
+                            <div class="form-group">
+                                <label for="nombre" class="col-form-label">Nombre:</label>
+                                <input type="text" class="form-control" name="nombre" id="nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido" class="col-form-label">Apellido:</label>
+                                <input type="text" class="form-control" name="apellido" id="apellido">
+                            </div>
+                            <div class="form-group">
+                                <label for="dni" class="col-form-label">Documento:</label>
+                                <input type="text" class="form-control" name="dni" id="dni">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono" class="col-form-label">Telefono:</label>
+                                <input type="text" class="form-control" name="telefono" id="telefono">
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-form-label">E-mail:</label>
+                                <input type="text" class="form-control" name="email" id="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="comentario" class="col-form-label">¿algun requerimiento? ¿Comentarios?</label>
+                                <textarea class="form-control" name="comentarios" id="comentarios"></textarea>
+                            </div>
+
+                            <!-- Data a ser enviada via hidden -->
+                            <input type="hidden" id="idhab" name="idhab" value="{{hab.id}}">
+                            <input type="hidden" id="entrada" name="entrada" value="{{entrada}}">
+                            <input type="hidden" id="salida" name="salida" value="{{salida}}">
+                            <input type="hidden" id="huespedes" name="huespedes" value="{{huespedes}}">
+                            <input type="hidden" id="dias" name="dias" value="{{dias_reserva}}">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <input type="submit" class="btn btn-primary" value="Procesar reserva"
+                            onclick=document.getElementById("form-{{hab.id}}").submit();>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer py-4">
+            {% if is_paginated %}
+                {% include "_pagination.html" %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

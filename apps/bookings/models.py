@@ -1,0 +1,135 @@
+from django.db import models
+from djmoney.money import Money
+from djmoney.models.fields import MoneyField
+from django.utils.translation import gettext_lazy as _
+from apps.hotels.models import Habitaciones
+
+
+class Reservas(models.Model):
+    """[Model]: Modelo de datos para registrar los datos de las reservas dentro del sistema.
+    """
+    localizador = models.CharField(
+        _('Localizador de la reserva'),
+        max_length=8,
+        blank=True,
+        null=True,
+    )
+
+    habitacion = models.ManyToManyField(
+        Habitaciones,
+        verbose_name=_("Habitaciones en la reserva"),
+        blank=True,
+    )
+
+    fecha_entrada = models.DateField(
+        _('Fecha de entrada'),
+        blank=True,
+        null=True,
+    )
+
+    fecha_salida = models.DateField(
+        _('Fecha de salida'),
+        blank=True,
+        null=True,
+    )
+
+    cantidad_dias = models.IntegerField(
+        verbose_name=_('Dias de estadia'),
+        blank=True,
+        null=True,
+    )
+
+    precio_reserva = MoneyField(
+        _('Precio final de la reserva'),
+        max_digits=19,
+        decimal_places=2,
+        default_currency='EUR',
+        default=Money(0, 'EUR'),
+        blank=True,
+        null=True,
+    )
+
+    comentarios = models.TextField(
+        _('Comentarios'),
+        blank=True,
+        null=True,
+    )
+
+    status = models.BooleanField(
+        _('Estado de la reserva'),
+        default=False,
+        help_text=_('Para verificar si fue confirmada o no.'),
+    )
+
+    def __str__(self):
+        return f"{self.localizador}"
+
+    @property
+    def responsable(self):
+        "Retorna como objeto el reservante responsable de la reserva."
+        responsable = Reservantes.objects.filter(reserva=self).first()
+        return responsable
+
+    class Meta:
+        verbose_name = _('Reserva')
+        verbose_name_plural = _("Reservas")
+
+
+class Reservantes(models.Model):
+    """[Model]: Modelo habilitado para guardar a las personas demandantes de una reserva de habitacion.
+    """
+    reserva = models.ForeignKey(
+        Reservas,
+        verbose_name=_("Reserva"),
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
+    nombre = models.CharField(
+        _('Nombres'),
+        null=False,
+        blank=False,
+        max_length=50,
+    )
+
+    apellido = models.CharField(
+        _('Apellidos'),
+        null=False,
+        blank=False,
+        max_length=50,
+    )
+
+    documento_identidad = models.CharField(
+        _('Documento de identidad'),
+        null=True,
+        blank=True,
+        max_length=50,
+        help_text=_('Puede incluir cualquier documento de identidad (DNI, TIE, NIE, PASAPORTE).'),
+    )
+
+    telefono = models.CharField(
+        _('Telefono'),
+        null=False,
+        blank=False,
+        max_length=13,
+    )
+
+    email = models.EmailField(
+        _('Email'),
+        null=True,
+        blank=True,
+        max_length=100,
+    )
+
+    responsable_de_reserva = models.BooleanField(
+        _('¿Es la persona responsable de la reserva?'),
+        default=True,
+    )
+
+    def __str__(self):
+        return f"{self.nombre}-{self.apellido}"
+
+    class Meta:
+        verbose_name = _('Reservante')
+        verbose_name_plural = _("Reservantes")

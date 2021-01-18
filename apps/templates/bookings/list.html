@@ -1,0 +1,68 @@
+{% extends "__base.html" %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card bg-secondary shadow h-100">
+            <div class="card-header bg-white border-0">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <h3 class="mb-0">List of Bookings</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <a href="{% url 'bookings-create' %}" class="btn btn-sm btn-success">Registrar nueva reserva</a>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Localizador</th>
+                        <th scope="col">Habitaciones</th>
+                        <th scope="col">Fecha de Entrada</th>
+                        <th scope="col">Fecha de Salida</th>
+                        <th scope="col">Precio de reserva</th>
+                        <th scope="col">Responsable</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'bookings-detail' booking.id %}">{{booking.localizador}}</a>
+                        </td>
+                        <td>{% for hab in booking.habitacion.all %} 
+                                {{ hab.nombre }},
+                            {% endfor %}
+                        </td>
+                        <td>{{booking.fecha_entrada}}</td>
+                        <td>{{booking.fecha_salida}}</td>
+                        <td>{{booking.precio_reserva}}</td>
+                        <td>{{booking.responsable}}</td>
+                        <td class="text-right">
+                            <div class="dropdown">
+                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                  <a class="dropdown-item" href="{% url 'bookings-update' booking.id %}">Update</a>
+                                  <a class="dropdown-item" href="{% url 'bookings-delete' booking.id %}">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer py-4">
+            {% if is_paginated %}
+                {% include "_pagination.html" %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

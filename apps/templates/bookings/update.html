@@ -1,0 +1,38 @@
+{% extends "__base.html" %}
+
+{% block page_content %}
+<div class="card">
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col-8">
+                <h3 class="mb-0">Update Booking #{{bookings.id}}</h3>
+            </div>
+            <div class="col-4 text-right">
+                <a href="{% url 'bookings-detail' bookings.id %}" class="btn btn-sm btn-info">Ver detalles</a>
+                <a href="{% url 'home' %}" class="btn btn-sm btn-primary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="pl-lg-4">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="form-control-label"
+                                for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                                {{ form.comentarios }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 offset-4">
+                        <button type="submit" class="btn btn-success btn-block">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
